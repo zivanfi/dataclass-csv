@@ -1,8 +1,10 @@
 import dataclasses
 import csv
+import locale
 
 from datetime import datetime, date
 from distutils.util import strtobool
+from decimal import Decimal
 from typing import Union
 
 from .field_mapper import FieldMapper
@@ -188,6 +190,10 @@ class DataclassReader:
                 else:
                     values.append(transformed_value)
                     continue
+
+            if field_type is float or field_type is Decimal:
+                # TODO: Exception handling
+                value = locale.delocalize(value)
 
             try:
                 transformed_value = field_type(value)
