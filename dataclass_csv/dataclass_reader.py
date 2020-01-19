@@ -1,7 +1,7 @@
 import dataclasses
 import csv
 
-from datetime import datetime
+from datetime import datetime, date
 from distutils.util import strtobool
 from typing import Union
 
@@ -161,7 +161,7 @@ class DataclassReader:
                 if len(real_types) == 1:
                     field_type = real_types[0]
 
-            if field_type is datetime:
+            if field_type is datetime or field_type is date:
                 try:
                     transformed_value = self._parse_date_value(field, value)
                 except ValueError as ex:
@@ -169,6 +169,8 @@ class DataclassReader:
                         ex, line_number=self.reader.line_num
                     ) from None
                 else:
+                    if field_type is date:
+                        transformed_value = transformed_value.date()
                     values.append(transformed_value)
                     continue
 
